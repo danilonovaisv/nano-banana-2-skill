@@ -1,0 +1,83 @@
+{
+  "session_id": "mas-active-2026-05-21",
+  "project": "PPT-CREATOR",
+  "created_at": "2026-03-27T05:16:45-03:00",
+  "last_updated": "2026-05-28T17:58:49-03:00",
+  "canva_config": {
+    "project_link": "https://canva.link/8h1vqdsx0t7mp4h",
+    "brand_kit_link": "https://www.canva.com/brand/kAHKycDhH1I",
+    "brand_template_link": "https://www.canva.com/brand/brand-templates/EAHK94UnVLo",
+    "assets_folder_link": "https://canva.link/49vv5v55i1jqi1k",
+    "fonts": {
+      "display": "Johnny (Roboto-Condensed-Black)",
+      "body": "Montserrat (Regular, SemiBold, Light)"
+    },
+    "colors": {
+      "azul_suave": "#72A7D3",
+      "rosa_doce": "#FF8FB0",
+      "creme": "#FFF4E6",
+      "azul_noite": "#0F1B2A",
+      "azul_nuvem": "#CDE2F3",
+      "cinza_quente": "#8781A6",
+      "brand_kit_azul_suave": "#71A7D3",
+      "brand_kit_rosa_doce": "#FFBFB2",
+      "brand_kit_creme": "#FFF1B8",
+      "brand_kit_azul_noite": "#071B24"
+    },
+    "fixed_rules": {
+      "brand_kit_id": "kAHKycDhH1I",
+      "brand_template_id": "EAHK94UnVLo",
+      "project_design_id": "DAHK8--BKQQ",
+      "typography": {
+        "display": "Johnny (Roboto-Condensed-Black) - ONLY for headings/titles",
+        "body": "Montserrat (Regular/SemiBold/Light) - ALWAYS for body, sub-headings, lists, index, tables"
+      },
+      "color_consistency": "Use #071B24 (Azul Noite) for Canva body text and #FFBFB2 (Rosa Doce) for Canva pink accents/CTAs. Web defaults to CSS values (#0F1B2A and #FF8FB0 respectively).",
+      "never_do": [
+        "Never rewrite or typecast JOHNNY'S logo - always use assets/logo PNGs",
+        "Never inject body text into the checklist shape background (element PB4Ps7lNFWl48M2x-LB8BNwD8PhDRVyCV) on Slide 43 - keep it set to ' '",
+        "Never change fonts to arbitrary ones; always stick to Montserrat and Roboto-Condensed-Black",
+        "Never flatten texts or render titles as images"
+      ]
+    }
+  },
+  "state": {
+    "current_phase": "FASE 1 — ANÁLISE ARQUITETURAL CONCLUÍDA. Grafo de conhecimento gerado.",
+    "blockers": [
+      "Aguardando transcrição bruta para processamento do roteiro"
+    ],
+    "completed_tasks": [
+      "DESIGN.md preenchido com dados reais de Johnny's by Anthonia",
+      "Execução do Graphify concluída com sucesso",
+      "GEMINI.md atualizado com protocolos Ghost System v3.1",
+      "Identificação do God Node: DeckStage"
+    ],
+    "in_progress": [
+      "Configuração do ambiente de orquestração"
+    ],
+    "pending": [
+      "/generate-roteiro",
+      "/generate-images",
+      "/deploy-deck"
+    ]
+  },
+  "message_bus": {
+    "history": [
+      {
+        "timestamp": "2026-05-21T22:35:00-03:00",
+        "from": "GhostCommander",
+        "to": "System",
+        "type": "ARCH_UPDATE",
+        "payload": {
+          "message": "GEMINI.md e memória atualizados após análise profunda do projeto via Graphify.",
+          "reduction_factor": "10076.2x",
+          "god_nodes": [
+            "DeckStage",
+            "roteiro.json",
+            "gas-fakes"
+          ]
+        }
+      }
+    ]
+  }
+}
