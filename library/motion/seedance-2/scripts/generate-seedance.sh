@@ -6,7 +6,7 @@
 # Tiers:   chinese (default) | global | vip
 # Options: --fast for fast-queue variants (global/vip only)
 #
-# Requires: bash 3.2+, curl, jq, python3
+# Requires: bash 3.2+, curl, jq
 
 set -euo pipefail
 
@@ -276,7 +276,7 @@ build_json_array() {
 # Usage: echo "text" | json_string
 # ============================================================
 json_string() {
-    python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().rstrip()))'
+    jq -Rs 'sub("\n$"; "")'
 }
 
 # ============================================================

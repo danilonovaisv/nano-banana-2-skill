@@ -45,4 +45,4 @@ All scripts support: `--async`, `--json`, `--timeout N`, `--help`
 ## Requirements
 
 - `MUAPI_KEY` environment variable (set via `core/platform/setup.sh`)
-- `curl`, `jq`, `python3`
+- `curl`, `jq`

@@ -38,7 +38,10 @@
         "Never inject body text into the checklist shape background (element PB4Ps7lNFWl48M2x-LB8BNwD8PhDRVyCV) on Slide 43 - keep it set to ' '",
         "Never change fonts to arbitrary ones; always stick to Montserrat and Roboto-Condensed-Black",
         "Never flatten texts or render titles as images"
-      ]
+      ],
+      "image_generation_rules": {
+        "character_drinks": "Para cada personagem gerado ou planejado no prompt de imagem, questione obrigatoriamente o usuário qual bebida ele estará segurando antes de formular o prompt consolidado."
+      }
     }
   },
   "state": {

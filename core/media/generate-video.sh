@@ -83,7 +83,7 @@ ENDPOINT=$(echo "$MODEL_DATA" | jq -r '.input_schema.schemas.input_data.endpoint
 PARAMS=$(echo "$MODEL_DATA" | jq -r '.input_schema.schemas.input_data.properties | keys[]')
 
 # Build Payload
-PROMPT_JSON=$(echo "$PROMPT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().rstrip()))')
+PROMPT_JSON=$(jq -n --arg str "$PROMPT" '$str')
 PAYLOAD="{\"prompt\": $PROMPT_JSON"
 
 if echo "$PARAMS" | grep -w "aspect_ratio" >/dev/null; then PAYLOAD="$PAYLOAD, \"aspect_ratio\": \"$ASPECT_RATIO\""; fi

@@ -90,7 +90,7 @@ if [ -n "$ASPECT_RATIO" ] && [ -z "$SUPPORTS_AR" ]; then
 fi
 
 # Build Payload Dynamically
-PROMPT_JSON=$(echo "$PROMPT" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().rstrip()))')
+PROMPT_JSON=$(jq -n --arg str "$PROMPT" '$str')
 PAYLOAD="{\"prompt\": $PROMPT_JSON"
 
 # Add string parameters

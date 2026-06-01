@@ -1,0 +1,27 @@
+{
+  "mcpServers": {
+    "playwright-server": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-playwright"],
+      "env": {},
+      "disabled": false,
+      "description": "Browser Automation MCP - Utilizado para carregar páginas animadas locais/produção, perfilar frames (FPS) e tirar screenshots de validação visual."
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@context7/mcp-server"],
+      "env": {},
+      "disabled": false,
+      "description": "Context7 MCP - Utilizado para recuperar a documentação mais recente e sintaxe atualizada de APIs JS como GSAP, Framer Motion e Lottie."
+    },
+    "custom-video-api": {
+      "command": "bun",
+      "args": ["run", "plugins/nano-banana/src/mcp-server.ts"],
+      "env": {
+        "GEMINI_API_KEY": "process.env.GEMINI_API_KEY"
+      },
+      "disabled": false,
+      "description": "Custom Media/Video API MCP - Interface direta de execução e polling para geração de imagens e vídeos por IA integrados na stack nano-banana."
+    }
+  }
+}

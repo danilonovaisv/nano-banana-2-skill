@@ -84,8 +84,8 @@ if [ -z "$MUAPI_KEY" ]; then echo "Error: MUAPI_KEY not set" >&2; exit 1; fi
 if [ -z "$OP" ]; then echo "Error: --op is required" >&2; exit 1; fi
 
 HEADERS=(-H "x-api-key: $MUAPI_KEY" -H "Content-Type: application/json")
-PROMPT_JSON=$(echo "${PROMPT:-}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().rstrip()))')
-EFFECT_JSON=$(echo "${EFFECT:-}" | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().rstrip()))')
+PROMPT_JSON=$(jq -n --arg str "${PROMPT:-}" '$str')
+EFFECT_JSON=$(jq -n --arg str "${EFFECT:-}" '$str')
 
 clean_url() { echo "$1" | tr -d '"'; }
 
@@ -158,12 +158,11 @@ esac
 SUBMIT=$(curl -s -X POST "${MUAPI_BASE}/${ENDPOINT}" "${HEADERS[@]}" -d "$PAYLOAD")
 
 if echo "$SUBMIT" | grep -q '"error"\|"detail"'; then
-    ERR=$(echo "$SUBMIT" | grep -o '"detail":"[^"]*"' | head -1 | cut -d'"' -f4)
-    [ -z "$ERR" ] && ERR=$(echo "$SUBMIT" | grep -o '"error":"[^"]*"' | head -1 | cut -d'"' -f4)
+    ERR=$(echo "$SUBMIT" | jq -r '.error // .detail // empty')
     echo "Error: ${ERR:-$SUBMIT}" >&2; exit 1
 fi
 
-REQUEST_ID=$(echo "$SUBMIT" | grep -oE '"request_id"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*: *"//' | sed 's/"$//')
+REQUEST_ID=$(echo "$SUBMIT" | jq -r '.request_id // empty')
 if [ -z "$REQUEST_ID" ]; then echo "Error: No request_id" >&2; echo "$SUBMIT" >&2; exit 1; fi
 [ "$JSON_ONLY" = false ] && echo "Request ID: $REQUEST_ID" >&2
 
@@ -177,16 +176,16 @@ ELAPSED=0; LAST_STATUS=""
 while [ $ELAPSED -lt $MAX_WAIT ]; do
     sleep $POLL_INTERVAL; ELAPSED=$((ELAPSED + POLL_INTERVAL))
     RESULT=$(curl -s -X GET "${MUAPI_BASE}/predictions/${REQUEST_ID}/result" "${HEADERS[@]}")
-    STATUS=$(echo "$RESULT" | grep -oE '"status"[[:space:]]*:[[:space:]]*"[^"]*"' | sed 's/.*: *"//' | sed 's/"$//')
+    STATUS=$(echo "$RESULT" | jq -r '.status // "unknown"')
     if [ "$STATUS" != "$LAST_STATUS" ] && [ "$JSON_ONLY" = false ]; then echo "Status: $STATUS (${ELAPSED}s)" >&2; LAST_STATUS="$STATUS"; fi
     case $STATUS in
         completed)
             [ "$JSON_ONLY" = false ] && echo "Done!" >&2
-            URL=$(echo "$RESULT" | grep -o '"outputs":\[[^]]*\]' | grep -o '"[^"]*\.\(mp4\|gif\|png\|jpg\)"' | head -1 | tr -d '"')
+            URL=$(echo "$RESULT" | jq -r '.outputs[0] // empty')
             [ -n "$URL" ] && [ "$JSON_ONLY" = false ] && echo "Result URL: $URL" >&2
             echo "$RESULT"; exit 0 ;;
         failed)
-            ERR=$(echo "$RESULT" | grep -o '"error":"[^"]*"' | head -1 | cut -d'"' -f4)
+            ERR=$(echo "$RESULT" | jq -r '.output.error // .error // empty')
             echo "Error: ${ERR:-Operation failed}" >&2; echo "$RESULT"; exit 1 ;;
     esac
 done

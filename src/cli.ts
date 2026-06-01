@@ -33,8 +33,9 @@ function loadEnvFile(path: string): void {
   for (const line of content.split("\n")) {
     const trimmed = line.trim();
     if (trimmed && !trimmed.startsWith("#")) {
-      const [key, ...valueParts] = trimmed.split("=");
-      const value = valueParts.join("=").replace(/^["']|["']$/g, "");
+      const [keyPart, ...valueParts] = trimmed.split("=");
+      const key = keyPart ? keyPart.trim() : "";
+      const value = valueParts.join("=").trim().replace(/^["']|["']$/g, "");
       if (key && value && !process.env[key]) {
         process.env[key] = value;
       }
@@ -289,14 +290,14 @@ async function detectKeyColor(inputPath: string): Promise<string> {
 }
 
 async function removeBackground(inputPath: string): Promise<string> {
-  const dir = inputPath.substring(0, inputPath.lastIndexOf("/"));
+  const dir = dirname(inputPath);
   const name = basename(inputPath, extname(inputPath));
   const outputPath = join(dir, `${name}.png`);
   const tempKeyed = join(dir, `${name}_keyed.png`);
 
   const cleanup = async () => {
     const { unlink } = await import("fs/promises");
-    await unlink(tempKeyed).catch(() => {});
+    await unlink(tempKeyed).catch(() => { });
   };
 
   try {
@@ -423,14 +424,22 @@ Default: Gemini 3.1 Flash Image Preview (Nano Banana 2)
     aspectRatio: undefined,
   };
 
+  function getArgValue(flag: string, value: string | undefined): string {
+    if (value === undefined || value.startsWith("-")) {
+      console.error(`\x1b[31mError:\x1b[0m Missing or invalid value for flag "${flag}"`);
+      process.exit(1);
+    }
+    return value;
+  }
+
   let i = 0;
   while (i < args.length) {
     const arg = args[i];
 
     if (arg === "-o" || arg === "--output") {
-      options.output = args[++i];
+      options.output = getArgValue(arg, args[++i]);
     } else if (arg === "-s" || arg === "--size") {
-      const size = args[++i];
+      const size = getArgValue(arg, args[++i]);
       if (VALID_SIZES.includes(size as ImageSize)) {
         options.size = size as ImageSize;
       } else {
@@ -438,7 +447,7 @@ Default: Gemini 3.1 Flash Image Preview (Nano Banana 2)
         process.exit(1);
       }
     } else if (arg === "-a" || arg === "--aspect") {
-      const aspect = args[++i];
+      const aspect = getArgValue(arg, args[++i]);
       if (VALID_ASPECTS.includes(aspect as (typeof VALID_ASPECTS)[number])) {
         options.aspectRatio = aspect;
       } else {
@@ -446,15 +455,15 @@ Default: Gemini 3.1 Flash Image Preview (Nano Banana 2)
         process.exit(1);
       }
     } else if (arg === "-m" || arg === "--model") {
-      options.model = resolveModel(args[++i]);
+      options.model = resolveModel(getArgValue(arg, args[++i]));
     } else if (arg === "-d" || arg === "--dir") {
-      options.outputDir = args[++i];
+      options.outputDir = getArgValue(arg, args[++i]);
     } else if (arg === "-r" || arg === "--ref") {
-      options.referenceImages.push(args[++i]);
+      options.referenceImages.push(getArgValue(arg, args[++i]));
     } else if (arg === "-t" || arg === "--transparent") {
       options.transparent = true;
     } else if (arg === "--api-key") {
-      options.apiKey = args[++i];
+      options.apiKey = getArgValue(arg, args[++i]);
     } else if (!arg.startsWith("-")) {
       options.prompt = arg;
     }
@@ -495,7 +504,14 @@ async function generateImage(options: Options): Promise<string[]> {
     process.exit(1);
   }
 
-  const ai = new GoogleGenAI({ apiKey });
+  const ai = new GoogleGenAI({
+    apiKey,
+    httpOptions: {
+      headers: {
+        "Referer": "http://localhost:3000"
+      }
+    }
+  });
 
   // Build imageConfig
   const imageConfig: Record<string, string> = {
